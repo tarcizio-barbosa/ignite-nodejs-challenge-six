@@ -45,7 +45,7 @@ describe("Authenticate a User", () => {
       await createUserUseCase.execute(newUser);
 
       await authenticateUserUseCase.execute({
-        email: "incorrect@.io.com",
+        email: "incorrect@.io.com.br",
         password: newUser.password,
       });
     }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
