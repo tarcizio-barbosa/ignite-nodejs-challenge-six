@@ -30,8 +30,6 @@ describe("Authenticate a User", () => {
       password: newUser.password,
     });
 
-    console.log(process.env.JWT_SECRET);
-
     expect(response).toHaveProperty("token");
   });
 });
