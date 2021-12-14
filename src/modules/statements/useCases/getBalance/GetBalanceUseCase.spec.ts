@@ -39,7 +39,7 @@ describe("Get Balance", () => {
     expect(getBalance).toHaveProperty("balance");
   });
 
-  it("Should not ble able to get a balance if user does not exists", () => {
+  it("Should not able able to get a balance if user does not exists", () => {
     const id = uuid();
 
     expect(async () => {
