@@ -36,33 +36,17 @@ describe("Authenticate a User Controller", () => {
   });
 
   it("Should not be able to authenticate a User with the incorrect E-mail", async () => {
-    const newUser: ICreateUserDTO = {
-      name: "Tarcizio",
-      email: "tarcizio@io.com.br",
-      password: "k9sonwow1%",
-    };
-
-    await request(app).post("/api/v1/users").send(newUser);
-
     const response = await request(app).post("/api/v1/sessions").send({
       email: "tarcizio@oi.com.br",
-      password: newUser.password,
+      password: "k9sonwow1%",
     });
 
     expect(response.status).toBe(401);
   });
 
   it("Should not be able to authenticate a User with the incorrect Password", async () => {
-    const newUser: ICreateUserDTO = {
-      name: "Tarcizio",
-      email: "tarcizio@io.com.br",
-      password: "k9sonwow1%",
-    };
-
-    await request(app).post("/api/v1/users").send(newUser);
-
     const response = await request(app).post("/api/v1/sessions").send({
-      email: newUser.email,
+      email: "tarcizio@io.com.br",
       password: "k9sonwow1$",
     });
 

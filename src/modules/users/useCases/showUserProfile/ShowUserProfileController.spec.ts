@@ -50,6 +50,6 @@ describe("Show User Profile Controller", () => {
         Authorization: `Bearer ${process.env.FAKE_TOKEN}`,
       });
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
   });
 });
