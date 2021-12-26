@@ -1,12 +1,13 @@
 import { Connection } from "typeorm";
-import request from "supertest";
 import createConnection from "../../../../database";
 import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
+import request from "supertest";
 import { app } from "../../../../app";
+import { v4 as uuid } from "uuid";
 
 let connection: Connection;
 
-describe("Create Statement", () => {
+describe("Get Statement Operation", () => {
   beforeAll(async () => {
     connection = await createConnection();
 
@@ -18,7 +19,7 @@ describe("Create Statement", () => {
     await connection.close();
   });
 
-  it("Should be able to create a deposit statement", async () => {
+  it("Should be able to get a User statement operation", async () => {
     const newUser: ICreateUserDTO = {
       name: "Tarcizio",
       email: "tarcizio@io.com.br",
@@ -34,7 +35,7 @@ describe("Create Statement", () => {
 
     const { token } = newSession.body;
 
-    const response = await request(app)
+    const newStatement = await request(app)
       .post("/api/v1/statements/deposit")
       .send({
         amount: 100,
@@ -44,10 +45,19 @@ describe("Create Statement", () => {
         Authorization: `Bearer ${token}`,
       });
 
-    expect(response.status).toBe(201);
+    const { id } = newStatement.body;
+
+    const response = await request(app)
+      .get(`/api/v1/statements/${id}`)
+      .set({
+        Authorization: `Bearer ${token}`,
+      });
+
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("user_id");
   });
 
-  it("Should be able to create a withdraw statement", async () => {
+  it("Should not be able to get a statement operation if does not exists", async () => {
     const newUser: ICreateUserDTO = {
       name: "Tarcizio",
       email: "tarcizio@io.com.br",
@@ -63,26 +73,14 @@ describe("Create Statement", () => {
 
     const { token } = newSession.body;
 
-    await request(app)
-      .post("/api/v1/statements/deposit")
-      .send({
-        amount: 100,
-        description: "Emergency found",
-      })
-      .set({
-        Authorization: `Bearer ${token}`,
-      });
+    const id = uuid();
 
     const response = await request(app)
-      .post("/api/v1/statements/withdraw")
-      .send({
-        amount: 50,
-        description: "Emergency withdraw",
-      })
+      .get(`/api/v1/statements/${id}`)
       .set({
         Authorization: `Bearer ${token}`,
       });
 
-    expect(response.status).toBe(201);
+    expect(response.status).toBe(404);
   });
 });
